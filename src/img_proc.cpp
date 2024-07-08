@@ -48,15 +48,28 @@ namespace img_proc
 int main()
 {
     using namespace img_proc;
-    cv::Mat img = cv::imread("/media/irving/UBUNTU 20_0/robomaster/哨兵静态图层/test_big.png",cv::IMREAD_GRAYSCALE);
+    cv::Mat img = cv::imread("/media/irving/UBUNTU 20_0/robomaster/哨兵静态图层/test_big1.png",cv::IMREAD_GRAYSCALE);
     Img_Proc imgProc;
 
 ///gamma
     cv::Mat look_up_table_ = cv::Mat::ones(1, 256, CV_8U);
     uchar* p = look_up_table_.ptr();
     for (int i = 0; i < 256; ++i)
-        p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, 0.3) * 255.0);
-    cv::LUT(img,look_up_table_,img);
+        p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, 0.1) * 255.0);
+//    cv::LUT(img,look_up_table_,img);
+
+/// 对比度
+    double g_nContrastValue = 55;
+    double g_nBrightValue = 1;
+        for(int y = 0; y < img.rows; y++ )
+    {
+      for(int x = 0; x < img.cols; x++ )
+      {
+          img.at<uchar>(y,x)= cv::saturate_cast<uchar>( (g_nContrastValue)*(img.at<uchar>(y,x) ) + g_nBrightValue );
+      }
+    }
+/// 标准化
+    cv::normalize(img, img, 0, 255, cv::NORM_MINMAX, CV_8UC1);
 
 ///滤波
     cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3)); // 结构元素
@@ -86,23 +99,8 @@ int main()
     cv::namedWindow("Image");
     cv::imshow("Image",img);
     cv::setMouseCallback("Image", imgProc.onMouse);
-    while (cv::getWindowProperty("Image", cv::WND_PROP_VISIBLE) > 0) {
-      cv::waitKey(1); // 非阻塞等待按键，直到窗口关闭
-      // 在这里可以处理 "Image" 窗口上的鼠标事件
-    }
-    cv::waitKey(0);
-
-    // 当 "Image" 窗口关闭后，打开 "Image2"
-    cv::namedWindow("Image2");
-    cv::imshow("Image2",imgProc.image_);
-    cv::setMouseCallback("Image2", imgProc.onMouse2);
-    // 现在开始监听 "Image2" 的鼠标事件
-    while (cv::getWindowProperty("Image2", cv::WND_PROP_VISIBLE) > 0) {
-      cv::waitKey(1);
-      // 在这里处理 "Image2" 窗口上的鼠标事件
-    }
     cv::waitKey(0);
     img = imgProc.image_;
 
-    cv::imwrite("/media/irving/UBUNTU 20_0/robomaster/哨兵静态图层/test2.png",img);
+    cv::imwrite("/media/irving/UBUNTU 20_0/robomaster/哨兵静态图层/test3.png",img);
 }
