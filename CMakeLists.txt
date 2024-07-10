@@ -41,8 +41,7 @@ include_directories(
 )
 
 
-add_executable(${PROJECT_NAME} src/pcd_to_image.cpp
-        include/pcd_to_image/img_proc.h)
+add_executable(${PROJECT_NAME} src/pcd_to_image.cpp)
 target_link_libraries(${PROJECT_NAME}
         ${catkin_LIBRARIES})
 
