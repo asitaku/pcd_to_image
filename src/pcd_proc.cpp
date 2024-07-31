@@ -37,48 +37,45 @@ int main()
 {
     // 读取PCD文件
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::io::loadPCDFile<pcl::PointXYZ>("/media/irving/UBUNTU 20_0/robomaster/哨兵pcd/0.03降采样_roll45.pcd", *cloud);
+  pcl::io::loadPCDFile<pcl::PointXYZ>(
+      "/home/xianghong/sentry_files/PCD/july_8.pcd", *cloud);
 
-    // 定义旋转变换矩阵
-    Eigen::Matrix4f transform_roll = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f transform = Eigen::Matrix4f::Identity();
 
-    // 绕X轴向上抬45度
-    float angle = -0.785; // 45度对应的弧度值
-    transform_roll (1, 1) = cos(angle);
-    transform_roll (1, 2) = -sin(angle);
-    transform_roll (2, 1) = sin(angle);
-    transform_roll (2, 2) = cos(angle);
+  // 定义旋转角度（弧度制）
+  float roll = 0.82;
+  float pitch = 0.05;
+  float yaw = -M_PI;
 
-    Eigen::Matrix4f transform_yaw = Eigen::Matrix4f::Identity();
+  // 创建旋转矩阵
+  Eigen::Matrix3f rotation;
+  rotation = Eigen::AngleAxisf(yaw, Eigen::Vector3f::UnitZ()) *
+             Eigen::AngleAxisf(pitch, Eigen::Vector3f::UnitY()) *
+             Eigen::AngleAxisf(roll, Eigen::Vector3f::UnitX());
 
-    // 绕Z轴旋转5度
-    angle = 0; // 5度对应的弧度值
-    transform_yaw(0, 0) = cos(angle);
-    transform_yaw(0, 1) = -sin(angle);
-    transform_yaw(1, 0) = sin(angle);
-    transform_yaw(1, 1) = cos(angle);
+  // 将旋转矩阵复制到4x4变换矩阵中
+  transform.block<3, 3>(0, 0) = rotation;
 
+  // 应用旋转变换
+  pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud(
+      new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::transformPointCloud(*cloud, *transformedCloud, transform);
 
-    Eigen::Matrix4f transform_pitch = Eigen::Matrix4f::Identity();
-    Eigen::Matrix4f transform = transform_yaw * transform_roll;
+  //  /// 范围滤波
+  //  double min_x = -8;
+  //    double max_x = 25;
+  //    double min_y = -10;
+  //    double max_y = 10;
+  //    double min_z = -0.1;
+  //    double max_z = 1;
+  //
+  //    transformedCloud = filterPointCloud(cloud, min_x, max_x, min_y, max_y,
+  //    min_z, max_z);
+  //
+  // 保存到新的PCD文件中
+  pcl::io::savePCDFileASCII("/home/xianghong/sentry_files/PCD/july_8_trans.pcd",
+                            *transformedCloud);
 
-    // 应用旋转变换
-    pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::transformPointCloud(*cloud, *transformedCloud, transform);
-
-    /// 范围滤波
-    double min_x = -8;
-    double max_x = 25;
-    double min_y = -10;
-    double max_y = 10;
-    double min_z = -0.1;
-    double max_z = 1;
-
-    transformedCloud = filterPointCloud(cloud, min_x, max_x, min_y, max_y, min_z, max_z);
-
-    // 保存到新的PCD文件中
-    pcl::io::savePCDFileASCII("/media/irving/UBUNTU 20_0/robomaster/哨兵pcd/roll45_cut.pcd", *transformedCloud);
-
-    std::cout << "Saved transformed point cloud to output.pcd" << std::endl;
-    return 0;
+  std::cout << "Saved transformed point cloud to output.pcd" << std::endl;
+  return 0;
 }
