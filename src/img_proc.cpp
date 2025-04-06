@@ -48,32 +48,33 @@ namespace img_proc
 int main()
 {
     using namespace img_proc;
-    cv::Mat img = cv::imread("/media/irving/UBUNTU 20_0/robomaster/哨兵静态图层/test_big1.png",cv::IMREAD_GRAYSCALE);
+    cv::Mat img = cv::imread("/home/ywj/nation_map_2.png",cv::IMREAD_GRAYSCALE);
     Img_Proc imgProc;
 
 ///gamma
     cv::Mat look_up_table_ = cv::Mat::ones(1, 256, CV_8U);
     uchar* p = look_up_table_.ptr();
     for (int i = 0; i < 256; ++i)
-        p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, 0.1) * 255.0);
-//    cv::LUT(img,look_up_table_,img);
+        p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, 0.3) * 255.0);
+    cv::LUT(img,look_up_table_,img);
 
+    cv::threshold(img, img, 90, 255, cv::THRESH_BINARY);
 /// 对比度
-    double g_nContrastValue = 55;
-    double g_nBrightValue = 1;
-        for(int y = 0; y < img.rows; y++ )
-    {
-      for(int x = 0; x < img.cols; x++ )
-      {
-          img.at<uchar>(y,x)= cv::saturate_cast<uchar>( (g_nContrastValue)*(img.at<uchar>(y,x) ) + g_nBrightValue );
-      }
-    }
+//    double g_nContrastValue = 50;
+//    double g_nBrightValue = 10;
+//        for(int y = 0; y < img.rows; y++ )
+//    {
+//      for(int x = 0; x < img.cols; x++ )
+//      {
+//          img.at<uchar>(y,x)= cv::saturate_cast<uchar>( (g_nContrastValue)*(img.at<uchar>(y,x) ) + g_nBrightValue );
+//      }
+//    }
 /// 标准化
-    cv::normalize(img, img, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+//    cv::normalize(img, img, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+//
+/////滤波
+//    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3)); // 结构元素
 
-///滤波
-    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3)); // 结构元素
-//    cv::threshold(img, img, 120, 255, cv::THRESH_BINARY);
 //    cv::morphologyEx(img, img, cv::MORPH_OPEN, kernel);
 //    cv::threshold(img, img, 50, 255, cv::THRESH_BINARY);
 
@@ -96,11 +97,12 @@ int main()
     cv::imshow("Image",img);
 
 ///鼠标操作回调
-    cv::namedWindow("Image");
+    cv::namedWindow("Image", cv::WINDOW_AUTOSIZE);
     cv::imshow("Image",img);
     cv::setMouseCallback("Image", imgProc.onMouse);
     cv::waitKey(0);
     img = imgProc.image_;
 
-    cv::imwrite("/media/irving/UBUNTU 20_0/robomaster/哨兵静态图层/test3.png",img);
+    img = 255 - img;
+    cv::imwrite("/home/ywj/nation_map_2.png",img);
 }

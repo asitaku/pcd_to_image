@@ -15,7 +15,7 @@ int main (int argc, char** argv)
 
     // 读取点云文件
     pcl::PCDReader reader;
-    reader.read ("/media/irving/UBUNTU 20_0/scans.pcd", *cloud); // 替换为你的输入文件名
+    reader.read ("/home/ywj/nation_origin.pcd", *cloud); // 替换为你的输入文件名
 
     std::cout<<0<<std::endl;
 
@@ -44,7 +44,7 @@ int main (int argc, char** argv)
 /// 体素网格过滤器对象
     pcl::VoxelGrid<pcl::PointXYZ> sor2;
     sor2.setInputCloud (cloud_xyz);
-    sor2.setLeafSize (0.05f, 0.05f, 0.05f); // 设置体素网格的大小
+    sor2.setLeafSize (0.0849f, 0.0849f, 0.0849f); // 设置体素网格的大小
     sor2.filter (*cloud_xyz);
     std::cout<<3<<std::endl;
 
@@ -54,7 +54,7 @@ int main (int argc, char** argv)
 
     // 保存降采样后的点云
     pcl::PCDWriter writer;
-    writer.write ("/media/irving/UBUNTU 20_0/0.04_down_samping.pcd", *filtered_output); // 输出文件名
+    writer.write ("/home/ywj/nation_processed.pcd", *filtered_output); // 输出文件名
     std::cout<<4<<std::endl;
 
     return (0);

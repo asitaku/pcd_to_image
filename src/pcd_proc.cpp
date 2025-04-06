@@ -38,13 +38,13 @@ int main()
     // 读取PCD文件
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
   pcl::io::loadPCDFile<pcl::PointXYZ>(
-      "/home/xianghong/sentry_files/PCD/july_8.pcd", *cloud);
+      "/home/ywj/nation_origin.pcd", *cloud);
 
     Eigen::Matrix4f transform = Eigen::Matrix4f::Identity();
 
   // 定义旋转角度（弧度制）
-  float roll = 0.82;
-  float pitch = 0.05;
+  float roll = 0.785;
+  float pitch = 0.009;
   float yaw = -M_PI;
 
   // 创建旋转矩阵
@@ -73,7 +73,7 @@ int main()
   //    min_z, max_z);
   //
   // 保存到新的PCD文件中
-  pcl::io::savePCDFileASCII("/home/xianghong/sentry_files/PCD/july_8_trans.pcd",
+  pcl::io::savePCDFileASCII("/home/ywj/nation_origin_rpy.pcd",
                             *transformedCloud);
 
   std::cout << "Saved transformed point cloud to output.pcd" << std::endl;
