@@ -48,17 +48,17 @@ namespace img_proc
 int main()
 {
     using namespace img_proc;
-    cv::Mat img = cv::imread("/home/ywj/nation_map_2.png",cv::IMREAD_GRAYSCALE);
+    cv::Mat img = cv::imread("/media/ywj/Steins_Gate/scans_proc_img.png",cv::IMREAD_GRAYSCALE);
     Img_Proc imgProc;
 
 ///gamma
     cv::Mat look_up_table_ = cv::Mat::ones(1, 256, CV_8U);
     uchar* p = look_up_table_.ptr();
     for (int i = 0; i < 256; ++i)
-        p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, 0.3) * 255.0);
+        p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, 0.2) * 255.0);
     cv::LUT(img,look_up_table_,img);
 
-    cv::threshold(img, img, 90, 255, cv::THRESH_BINARY);
+    cv::threshold(img, img, 120, 255, cv::THRESH_BINARY);
 /// 对比度
 //    double g_nContrastValue = 50;
 //    double g_nBrightValue = 10;
@@ -84,7 +84,7 @@ int main()
 
 ///整体翻转
 // 0为上下，1为左右，-1全
-//    cv::flip(img,img,0);
+    cv::flip(img,img,0);
 
 // 转置
 //    cv::transpose(img,img);
@@ -104,5 +104,5 @@ int main()
     img = imgProc.image_;
 
     img = 255 - img;
-    cv::imwrite("/home/ywj/nation_map_2.png",img);
+    cv::imwrite("/media/ywj/Steins_Gate/scans_proc_img_proc.png",img);
 }

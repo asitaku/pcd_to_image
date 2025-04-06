@@ -15,7 +15,7 @@ int main (int argc, char** argv)
 
     // 读取点云文件
     pcl::PCDReader reader;
-    reader.read ("/home/ywj/nation_origin.pcd", *cloud); // 替换为你的输入文件名
+    reader.read ("/media/ywj/Steins_Gate/scans.pcd", *cloud); // 替换为你的输入文件名
 
     std::cout<<0<<std::endl;
 
@@ -25,12 +25,12 @@ int main (int argc, char** argv)
 
 
 /// 统计滤波器移除离群点
-    pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
-    sor.setInputCloud(cloud_xyz);
-    sor.setMeanK(10); // 根据周围邻居数量
-    sor.setStddevMulThresh(10.0); // 标准差阈值
-//    sor.filter(*cloud_xyz);
-    std::cout<<1<<std::endl;
+//    pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
+//    sor.setInputCloud(cloud_xyz);
+//    sor.setMeanK(10); // 根据周围邻居数量
+//    sor.setStddevMulThresh(10.0); // 标准差阈值
+////    sor.filter(*cloud_xyz);
+//    std::cout<<1<<std::endl;
 
 /// 半径滤波器
 //    pcl::RadiusOutlierRemoval<pcl::PointXYZ> outrem;
@@ -44,7 +44,7 @@ int main (int argc, char** argv)
 /// 体素网格过滤器对象
     pcl::VoxelGrid<pcl::PointXYZ> sor2;
     sor2.setInputCloud (cloud_xyz);
-    sor2.setLeafSize (0.0849f, 0.0849f, 0.0849f); // 设置体素网格的大小
+    sor2.setLeafSize (0.068f, 0.068f, 0.068f); // 设置体素网格的大小
     sor2.filter (*cloud_xyz);
     std::cout<<3<<std::endl;
 
@@ -54,7 +54,7 @@ int main (int argc, char** argv)
 
     // 保存降采样后的点云
     pcl::PCDWriter writer;
-    writer.write ("/home/ywj/nation_processed.pcd", *filtered_output); // 输出文件名
+    writer.write ("/media/ywj/Steins_Gate/scans_down.pcd", *filtered_output); // 输出文件名
     std::cout<<4<<std::endl;
 
     return (0);

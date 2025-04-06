@@ -36,18 +36,18 @@ int main() {
   // 从PCD文件中读取点云数据
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
   if (pcl::io::loadPCDFile<pcl::PointXYZ>(
-          "/home/ywj/nation_origin_rpy.pcd", *cloud) ==
+          "/media/ywj/Steins_Gate/scans_proc.pcd", *cloud) ==
       -1) {
     std::cout << "Failed to load PCD file" << std::endl;
     return -1;
   }
 
-  double min_x = -10;
-  double max_x = 10;
-  double min_y = -25;
-  double max_y = 8;
+  double min_x = -5;
+  double max_x = 15;
+  double min_y = -7;
+  double max_y = 7;
   double min_z = -0.5;
-  double max_z = 1;
+  double max_z = 2;
 
   cloud = filterPointCloud(cloud, min_x, max_x, min_y, max_y, min_z, max_z);
 
@@ -102,7 +102,7 @@ int main() {
     int image_z = static_cast<int>((point.z - min_z) / (max_z - min_z) * 255);
 
     // 在图像上绘制点
-    image.at<ushort>(image_y, image_x) += 1;
+    image.at<ushort>(image_y, image_x) += 3;
   }
 
   /// 标准化
@@ -127,7 +127,7 @@ int main() {
   //    cv::transpose(image,image);
 
   cv::imshow("Image", image);
-  cv::imwrite("/home/ywj/nation_origin_image_2.png", image);
+  cv::imwrite("/media/ywj/Steins_Gate/scans_proc_img.png", image);
   cv::waitKey(0);
 
   return 0;
